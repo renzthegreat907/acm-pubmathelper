@@ -1,3 +1,5 @@
+*remarks: largely AI-assisted as an MVP*
+
 # ACM Pubmat Helper
 
 This project is an MCP gateway for organization-specific pubmat tools.
