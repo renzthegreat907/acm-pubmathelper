@@ -18,6 +18,7 @@ packages = [{ include = "pubmat_helper" }]
 python = "^3.12"
 fastmcp = "^2.3.0"
 MCP-remove-background = { git = "https://github.com/adamryczkowski/MCP-remove-background.git" }
+httpx = "^0.28.1"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.0"
