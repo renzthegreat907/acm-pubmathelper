@@ -8,7 +8,7 @@ def test_server_registers_pubmat_tools() -> None:
     tool_names = set(tools)
 
     assert tool_names == {
+        "greet",
+        "list_background_removal_models",
         "remove_image_background",
-        "list_background_models",
-        "remove_image_background_from_url"
     }
