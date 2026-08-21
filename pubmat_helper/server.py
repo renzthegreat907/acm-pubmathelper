@@ -52,7 +52,7 @@ async def remove_image_background_from_url(
     ## Download the image from the URL
 
     # Step 1: get a response from the URL
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(follow_redirects=True) as client:
         response = await client.get(image_url)
         response.raise_for_status()
         # Check that `response.content` contains the image
