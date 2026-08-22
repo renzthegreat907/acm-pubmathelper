@@ -9,10 +9,10 @@ description = "Organization-specific MCP tools for pubmat creation"
 requires-python = ">=3.12"
 
 [project.scripts]
-pubmat-helper = "pubmat_helper.cli:main"
+pubmat-helper = "pubmathelper.cli:main"
 
 [tool.poetry]
-packages = [{ include = "pubmat_helper" }]
+packages = [{ include = "pubmathelper" }]
 
 [tool.poetry.dependencies]
 python = "^3.12"
