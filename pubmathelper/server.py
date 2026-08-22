@@ -14,9 +14,12 @@ from tempfile import TemporaryDirectory
 from pathlib import Path
 
 import httpx
-from MCP_remove_background.tools.remove_background import (  # pyright: ignore[reportMissingTypeStubs]
+from MCP_remove_background.tools.remove_background import ( # pyright: ignore[reportMissingTypeStubs]
     list_background_models as _list_background_removal_models,
     remove_background as _remove_background,
+)
+from MCP_remove_background.tools.remove_background import ( # pyright: ignore[reportMissingTypeStubs]
+    unload_models,
 )
 
 import pubmathelper.logger as logger # pyright: ignore[reportMissingTypeStubs]
@@ -101,6 +104,9 @@ async def rib_handle_wikimedia(
         ## Remove_image_background(...)
         metadata = await _remove_background(str(input_path), model = model)
         logger.log_memory("rib_handle_wikimedia: after invoking background remover")
+        unload_models()
+        logger.log_memory("rib_handle_wikimedia: after unloading models")
+
 
         ## Package the image into the output
         assert metadata.output_path is not None
@@ -181,9 +187,11 @@ async def remove_image_background_local(
         model=model,
         try_floodfill_first=False,
     )
+    unload_models()
     return result.model_dump()
 
 def main() -> None:
     """Run the helper over the default local stdio transport."""
+    unload_models()
     mcp.run()
     logger.log_memory("startup")
