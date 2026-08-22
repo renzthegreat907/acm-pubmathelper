@@ -1,6 +1,6 @@
 import asyncio
 
-from pubmat_helper.server import mcp  # pyright: ignore[reportMissingTypeStubs]
+from pubmathelper.server import mcp  # pyright: ignore[reportMissingTypeStubs]
 
 
 def test_server_registers_pubmat_tools() -> None:
