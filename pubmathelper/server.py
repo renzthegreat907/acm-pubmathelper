@@ -19,6 +19,8 @@ from MCP_remove_background.tools.remove_background import (  # pyright: ignore[r
     remove_background as _remove_background,
 )
 
+import pubmathelper.logger as logger # pyright: ignore[reportMissingTypeStubs]
+
 mcp = FastMCP("ACM Pubmat Helper")
 
 ############################################################
@@ -46,6 +48,7 @@ async def remove_image_background(
     Outputs: a `ToolResult` which contains both the photo and the process metadata.
     """
 
+    logger.log_memory("remove_image_background: upon calling `remove_image_background`")
     # We redirect function flow to a source-dedicated function.
     # First, let's find out what the URL source is, in case it is unspecified.
     if url_source is None: url_source = detect_source(image_url)
@@ -70,23 +73,28 @@ async def rib_handle_wikimedia(
             # Yeah yeah, my professional email is okay for now
         "Accept": "image/*",
     }
-    
+
+    logger.log_memory("rib_handle_wikimedia: upon calling `rib_handle_wikimedia`")
     async with httpx.AsyncClient(follow_redirects=True) as client:
-            response = await client.get(
-                image_url,
-                headers = headers
-            )
-            response.raise_for_status()
-            # Check that `response.content` contains the image
-            print(f"Received response of type {response.headers.get('content-type')}, "
-                  f"size {len(response.content)}")
+        response = await client.get(
+            image_url,
+            headers = headers
+        )
+        logger.log_memory("rib_handle_wikimedia: after getting url response")
+        response.raise_for_status()
+
+        # Check that `response.content` contains the image
+        print(f"Received response of type {response.headers.get('content-type')}, "
+                f"size {len(response.content)}")
 
     with TemporaryDirectory() as temp_dir_name:
         input_path = Path(temp_dir_name) / "input.jpg"
         input_path.write_bytes(response.content)
+        logger.log_memory("rib_handle_wikimedia: after writing to temp `image_path`")
 
         ## Remove_image_background(...)
         metadata = await _remove_background(str(input_path), model = model)
+        logger.log_memory("rib_handle_wikimedia: after invoking background remover")
 
         ## Package the image into the output
         assert metadata.output_path is not None
@@ -96,6 +104,7 @@ async def rib_handle_wikimedia(
             data = output_bytes,
             format = "png",
         )
+        logger.log_memory("rib_handle_wikimedia: after processing the image")
 
         ## Return the image plus the metadata
         return ToolResult(
@@ -171,3 +180,4 @@ async def remove_image_background_local(
 def main() -> None:
     """Run the helper over the default local stdio transport."""
     mcp.run()
+    logger.log_memory("startup")
