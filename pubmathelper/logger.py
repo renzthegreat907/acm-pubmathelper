@@ -16,19 +16,16 @@ def log_memory(label: str) -> None:
     rss_mb = rss / (1024 ** 2)
 
     if _previous_rss is None:
-        logger.info(
-            "[MEMORY] %s | RSS: %.2f MB",
-            label,
-            rss_mb,
+        print(
+            f"[MEMORY] {label} | RSS: {rss_mb:.2f} MB",
+            flush=True,
         )
     else:
         delta_mb = (rss - _previous_rss) / (1024 ** 2)
 
-        logger.info(
-            "[MEMORY] %s | RSS: %.2f MB | Δ: %+.2f MB",
-            label,
-            rss_mb,
-            delta_mb,
+        print(
+            f"[MEMORY] {label} | RSS: {rss_mb:.2f} MB | Δ: {delta_mb:+.2f} MB",
+            flush=True
         )
 
     _previous_rss = rss
