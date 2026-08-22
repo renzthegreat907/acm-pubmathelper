@@ -31,7 +31,7 @@ mcp = FastMCP("ACM Pubmat Helper")
 async def remove_image_background(
     image_url: str,
     url_source: str | None = None,
-    model: str = "u2net",
+    model: str = "u2netp",
 ) -> ToolResult:
     """
     Download an image from a URL, remove its background,
@@ -43,16 +43,22 @@ async def remove_image_background(
       If there is special handling for the source, it is executed.
       If unspecified, the URL is detected for a supported source.
       Otherwise, the image is treated as a generic source.
-    - `model`: The background removal model used. By default, this is `u2net`.
+    - `model`: The background removal model used. By default, this is `u2netp`.
 
     Outputs: a `ToolResult` which contains both the photo and the process metadata.
     """
 
     logger.log_memory("remove_image_background: upon calling `remove_image_background`")
+
     # We redirect function flow to a source-dedicated function.
     # First, let's find out what the URL source is, in case it is unspecified.
     if url_source is None: url_source = detect_source(image_url)
         # For the sake of testing, we always say via ChatGPT that a Wikimedia URL comes from there.
+
+    logger.log_misc("Received request to remove image background:")
+    logger.log_misc(f"-> {image_url=}")
+    logger.log_misc(f"-> {url_source=}")
+    logger.log_misc(f"-> {model=}")
 
     # Next, we redirect function flow.
     match url_source:
@@ -66,7 +72,7 @@ async def remove_image_background(
 
 async def rib_handle_wikimedia(
     image_url: str,
-    model: str = "u2net",
+    model: str = "u2netp",
 ) -> ToolResult:
     headers = {
         "User-Agent": "ACM-PubmatHelper/1.0 (contact: rrsibal@up.edu.ph)",
@@ -84,7 +90,7 @@ async def rib_handle_wikimedia(
         response.raise_for_status()
 
         # Check that `response.content` contains the image
-        print(f"Received response of type {response.headers.get('content-type')}, "
+        logger.log_misc(f"Received response of type {response.headers.get('content-type')}, "
                 f"size {len(response.content)}")
 
     with TemporaryDirectory() as temp_dir_name:
@@ -114,13 +120,13 @@ async def rib_handle_wikimedia(
 
 async def rib_handle_chatgpt(
     image_url: str,
-    model: str = "u2net",
+    model: str = "u2netp",
 ) -> ToolResult:
     raise NotImplementedError("Not yet supported")
 
 async def rib_handle_generic(
     image_url: str,
-    model: str = "u2net",
+    model: str = "u2netp",
 ) -> ToolResult:
     raise NotImplementedError("Not yet supported")
 
@@ -163,7 +169,7 @@ def detect_source(url: str) -> str | None:
 async def remove_image_background_local(
     image_path: str,
     output_path: str | None = None,
-    model: str = "u2net",
+    model: str = "u2netp",
 ) -> dict[str, Any]:
     """
     Remove an image background and save a transparent PNG.

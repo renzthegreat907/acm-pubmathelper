@@ -29,3 +29,9 @@ def log_memory(label: str) -> None:
         )
 
     _previous_rss = rss
+
+def log_misc(message: str) -> None:
+    print(
+        f"[MISC] {message}",
+        flush=True
+    )
