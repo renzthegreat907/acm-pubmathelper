@@ -102,7 +102,11 @@ async def rib_handle_wikimedia(
         logger.log_memory("rib_handle_wikimedia: after writing to temp `image_path`")
 
         ## Remove_image_background(...)
-        metadata = await _remove_background(str(input_path), model = model)
+        metadata = await _remove_background(
+            image_path=str(input_path),
+            model=model,
+            try_floodfill_first=False,
+        )
         logger.log_memory("rib_handle_wikimedia: after invoking background remover")
         unload_models()
         logger.log_memory("rib_handle_wikimedia: after unloading models")
